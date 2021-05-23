@@ -6,9 +6,9 @@ class Crc(AbstractAlgorithm):
         self.key = 0x18005  # TODO
         self.key_length = 16
 
-    def output(self):
-        pass
-        # print("test")
+    def set_key_length(self, kl):
+        if kl in [12,16,32]:
+            self.key_length = kl
 
     def copy_list(self, src, src_start_idx, dest, dest_start_idx, qty):
         dest = dest[:dest_start_idx] + src[src_start_idx : src_start_idx + qty] + dest[dest_start_idx + qty :]
@@ -18,7 +18,7 @@ class Crc(AbstractAlgorithm):
         n = len(bits)
         crc = [0] * self.key_length
         temp = [0] * (n + self.key_length)
-        temp = copy_list(bits, 0, temp, self.key_length, n)
+        temp = self.copy_list(bits, 0, temp, self.key_length, n)
         tkey = []
         for i in range(self.key_length + 1):
             if self.key & (1 << i) == 0:
@@ -31,7 +31,7 @@ class Crc(AbstractAlgorithm):
                 for j in range(self.key_length + 1):
                     temp[i - j] = temp[i - j] ^ tkey[self.key_length - j]
 
-        return copy_list(temp, 0, crc, 0, self.key_length)
+        return self.copy_list(temp, 0, crc, 0, self.key_length)
 
     # TODO
     # encodeCRC
