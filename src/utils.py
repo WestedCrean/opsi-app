@@ -26,6 +26,18 @@ def interfere_data(data, n):
     return data
 
 
+def interfere_bits(data, bits):
+    if isinstance(data, str):
+        data = str_to_list(data)
+    data.reverse()
+    bits = bits.split(",")
+    for bit in bits:
+        data[int(bit) - 1] = str(int(not int(data[int(bit) - 1])))
+    data.reverse()
+    data = list_to_str(data)
+    return data
+
+
 def count_errors(l1, l2):
     if len(l1) != len(l2):
         return -1
