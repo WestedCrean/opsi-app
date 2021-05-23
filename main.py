@@ -6,7 +6,7 @@ from src import utils
 from src import SessionState
 
 
-sess = SessionState.get(data="", ile_zakloc=1)
+sess = SessionState.get(data="", interfered_data="", ile_zakloc=1)
 
 st.header("Detekcja i korekcja błędów w transmisji danych")
 
@@ -46,16 +46,13 @@ with st.form("zakloc"):
     sess.ile_zakloc = st.number_input("Liczba bitów", 1, len(sess.data))
     zakloc = st.form_submit_button("Zakłóć")
 if zakloc:
-    bity_zakloc = inpt.text_input("Które bity zakłócić", value="", key=1)
     if bity_zakloc:
-        bity_zakloc = bity_zakloc.split(",")
-        print("1")
-        print(bity_zakloc)
+        sess.interfered_data = utils.interfere_bits(sess.data, bity_zakloc)
+        bity_zakloc = inpt.text_input("Które bity zakłócić", value="", key=1)
     else:
-        print("2")
         data = utils.interfere_data(sess.data, sess.ile_zakloc)
         sess.data = utils.list_to_str(data)
-    st.write(f"Zakłocone dane: {sess.data}")
+    st.write(f"Zakłocone dane: {sess.interfered_data}")
 st.subheader("Podsumowanie")
 st.write(f"Przesłane bity danych:")
 st.write(f"Przesłane bity kontrolne:")
