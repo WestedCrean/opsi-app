@@ -2,6 +2,7 @@
 
 import streamlit as st
 from src.algorytmy.crc import Crc
+from src.algorytmy.parity import Parity
 from src import utils
 from src import SessionState
 
@@ -15,8 +16,7 @@ st.write("You selected:", option)
 if option == "CRC":
     algo = Crc()
 elif option == "kontrola parzystości":
-    # algo = kp()
-    pass
+    algo = Parity()
 else:
     pass
 
@@ -46,13 +46,16 @@ with st.form("zakloc"):
     sess.ile_zakloc = st.number_input("Liczba bitów", 1, len(sess.data))
     zakloc = st.form_submit_button("Zakłóć")
 if zakloc:
+    print(f"bity_zakloc: {bity_zakloc}")
     if bity_zakloc:
         sess.interfered_data = utils.interfere_bits(sess.data, bity_zakloc)
         bity_zakloc = inpt.text_input("Które bity zakłócić", value="", key=1)
     else:
         data = utils.interfere_data(sess.data, sess.ile_zakloc)
-        sess.data = utils.list_to_str(data)
+        sess.interfered_data = utils.list_to_str(data)
     st.write(f"Zakłocone dane: {sess.interfered_data}")
+    result = algo.encode(sess.data)
+    st.write(algo.decode(result, sess.interfered_data))  # TODO: wyświetlanie w podsumowaniu
 st.subheader("Podsumowanie")
 st.write(f"Przesłane bity danych:")
 st.write(f"Przesłane bity kontrolne:")
